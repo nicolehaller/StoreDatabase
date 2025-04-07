@@ -172,7 +172,7 @@ MODIFY SID integer NOT NULL;
 
  insert into customer
  values (1, "Sara", "Haines", "7 Hane Ln", "Woodmere", "NY", "11598", "sh@gmail.com", "sh1", "516666666"),
-		(2, "Jane", "Hines", "6 Broad Ln", "Cedarhurst", "NY", "11558", "jh@gmail.com", "jh1", "516766666"),
+	(2, "Jane", "Hines", "6 Broad Ln", "Cedarhurst", "NY", "11558", "jh@gmail.com", "jh1", "516766666"),
         (3, "Leah", "Kram", "5 Hawk Ln", "Flushing", "NY", "11227", "lk@gmail.com", "lk1", "516666667"),
         (4, "Kayla", "Will", "7 Tree Ln", "Flushing", "NY", "11898", "kw@gmail.com", "kw1", "516666669"),
         (5, "Harry", "Lin", "5 Inwood Ln", "Brownsville", "NY", "11899", "hl@gmail.com", "hl1", "516666664"),
@@ -205,7 +205,7 @@ select * from customer;
 
  insert into staff
  values (1, "Rachel", "Nin", "19 Beach Ln", "Woodmere", "NY", "11598", "sh@gmail.com"),
-		(2, "Sam", "Hiss", "16 Broad Ln", "Cedarhurst", "NY", "11558", "jh@gmail.com"),
+	(2, "Sam", "Hiss", "16 Broad Ln", "Cedarhurst", "NY", "11558", "jh@gmail.com"),
         (3, "Evan", "Jones", "90 Hawk Ln", "Skokie", "IL", "11227", "lk@gmail.com"),
         (4, "Samantha", "Williams", "25 Tree Ln", "Hollywood", "FL", "11898", "kw@gmail.com"),
         (5, "James", "Lin", "80 Inwood Ln", "Boca Raton", "FL", "11899", "hl@gmail.com"),
@@ -257,7 +257,6 @@ value (1,1),
 
 select * from product_warehouse;
 
-
 insert into warehouse
 values (1, "2 Dog Ln", "Skokie", "IL", "11227", "Refridgerated"),
 (2, "7 Arthur Ln", "Skokie", "IL", "11227", "Refridgerated"),
@@ -270,7 +269,7 @@ values (1, 1, 1, "number", "2024-05-15", NULL),
 (3, 3, 3, "letter grade", "2022-05-15", NULL),
 (4, 3, 1, "letter grade", "2021-05-15", "amazing cereal!");
 
-insert into purchase -- prod_ID: 2, 3, CID 2 and 3 should have pet
+insert into purchase 
 values (1, 1, 1, 5,  "cash", "2024-05-15"),
 (2, 2, 2, 15, "credit card", "2023-05-15"),
 (3, 3, 3, 20,  "cash", "2024-05-15"),
@@ -329,7 +328,7 @@ where d.purchase_ID = pu.purchase_ID and pu.CID = c.CID
 	and d.survey_comments like "%@gmail.com" 
         or d.survey_comments like "%@outlook.com" 
         or d.survey_comments like "%@yahoo.com"
-		or d.survey_comments like "%@aol.com" 
+	or d.survey_comments like "%@aol.com" 
         or d.survey_comments like "%Ln" 
         or d.survey_comments like "%Rd" 
         or d.survey_comments like "%Ct" 
