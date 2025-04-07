@@ -4,7 +4,7 @@ use store;
 select user();
 
 -- patrick is representing staff, sara is representing customer
--- 9) Staff are restricted from accessing customer credit card number and expiration dates. Create SQL to implement. Demonstrate your implementation will prevent staff from viewing customer credit card data.
+-- 1) Staff are restricted from accessing customer credit card number and expiration dates. Create SQL to implement. Demonstrate your implementation will prevent staff from viewing customer credit card data.
 create user 'patrick'@'localhost' identified by 'staff';
 
 create VIEW staff_view_of_purchase
@@ -16,11 +16,11 @@ from staff_view_of_purchase;
 
 grant select on store.staff_view_of_purchase to 'patrick'@'localhost';
 
--- 10) Staff can’t delete purchases after they are entered in the database. Create SQL to implement. Demonstrate your implementation will prevent staff from deleting purchases.
+-- 2) Staff can’t delete purchases after they are entered in the database. Create SQL to implement. Demonstrate your implementation will prevent staff from deleting purchases.
 grant select, insert, update on store.purchase to 'patrick'@'localhost';
 revoke delete on store.purchase from 'patrick'@'localhost';
 
--- 6) Customers can view, but not change past orders. Create SQL to implement. Demonstrate your implementation will not edit past orders by attempting to change data.
+-- 3) Customers can view, but not change past orders. Create SQL to implement. Demonstrate your implementation will not edit past orders by attempting to change data.
 create user 'sara'@'localhost' identified by 'customer';
 grant select on store.purchase to 'sara'@'localhost';
 
@@ -41,7 +41,7 @@ ALTER TABLE customer
 MODIFY c_account varchar(35) NOT NULL,
 MODIFY c_password varchar(35) NOT NULL;
  
- create table staff
+create table staff
 (SID integer primary key,
  s_first varchar(20) NOT NULL,
  s_last varchar(20) NOT NULL,
@@ -54,13 +54,13 @@ MODIFY c_password varchar(35) NOT NULL;
 ALTER TABLE staff
 MODIFY s_email varchar(35) NOT NULL;
  
-  create table staff_dept
+create table staff_dept
  (staff_dept_ID integer primary key,
   SID integer,
   dept_name varchar(30),
   foreign key(SID) references staff(SID));
   
-  ALTER TABLE staff_dept
+ALTER TABLE staff_dept
 MODIFY dept_name varchar(35) NOT NULL;
  
 create table staff_title
@@ -72,7 +72,7 @@ create table staff_title
   salary integer,
   foreign key(SID) references staff(SID));
   
-  ALTER TABLE staff_title
+ALTER TABLE staff_title
 MODIFY SID integer NOT NULL;
  
 create table product
@@ -100,14 +100,14 @@ create table warehouse
  w_zipcode char(5),
  w_type varchar(35));
  
-  create table product_warehouse
+create table product_warehouse
  (prod_warehouse_ID integer AUTO_INCREMENT primary key,
   prod_ID integer,
   WID integer,
   foreign key(prod_ID) references product(prod_ID),
   foreign key(WID) references warehouse(WID));
   
-  ALTER TABLE product_warehouse
+ALTER TABLE product_warehouse
 MODIFY prod_ID integer NOT NULL,
 MODIFY WID integer NOT NULL;
  
@@ -122,11 +122,11 @@ create table rating
   foreign key(CID) references customer(CID),
   foreign key(prod_ID) references product(prod_ID));
 
-  ALTER TABLE rating
+ALTER TABLE rating
 MODIFY CID integer NOT NULL,
 MODIFY Prod_ID integer NOT NULL;
 
-  create table purchase
+create table purchase
  (purchase_ID integer primary key,
   CID integer,
   prod_ID integer,
@@ -135,7 +135,7 @@ MODIFY Prod_ID integer NOT NULL;
   foreign key(CID) references customer(CID),
   foreign key(prod_ID) references product(prod_ID));
   
-    ALTER TABLE purchase
+ALTER TABLE purchase
 MODIFY prod_ID integer NOT NULL,
 MODIFY CID integer NOT NULL;
 
@@ -166,7 +166,7 @@ create table delivery
   foreign key(SID) references staff(SID),
   foreign key(purchase_ID) references purchase(purchase_ID));
   
-    ALTER TABLE delivery
+ALTER TABLE delivery
 MODIFY purchase_ID integer NOT NULL,
 MODIFY SID integer NOT NULL;
 
@@ -292,7 +292,7 @@ values (1, 1, 1, "7 Hane Ln", "Woodmere", "NY", "11598", "2024-05-15", "2024-05-
 
 SELECT * FROM delivery;
 
--- 1) Identify customers who have not completed a purchase/delivery survey in the last year. Display the customer name and email. Use a nested select to answer this question.
+-- 4) Identify customers who have not completed a purchase/delivery survey in the last year. Display the customer name and email. Use a nested select to answer this question.
 Select c_first, c_last, c_account
 from customer c
 where CID not in 
@@ -300,21 +300,21 @@ where CID not in
     from purchase p
     where purchase_date >= "2023-05-15");
 
--- 2) Identify the most popular product purchased in the last 2 months. Display four columns: warehouse, product name, product type and number of orders. Display one distinct row for each warehouse, product and product type. Display the product with the most orders first.
+-- 5) Identify the most popular product purchased in the last 2 months. Display four columns: warehouse, product name, product type and number of orders. Display one distinct row for each warehouse, product and product type. Display the product with the most orders first.
 select WID "warehouse", prod_name "product name", prod_type "product type", count(pr.prod_name) "number of orders"
 from product pr, purchase pu, product_warehouse pw
 where pr.prod_ID = pu.prod_ID and pr.prod_ID = pw.prod_ID and purchase_date >= "2024-03-15"
 group by WID, prod_name, prod_type
 order by 4 desc;
 
--- 3) Identify customers with the most purchases of pet products in the last 2 years by customer location. Display five rows in your output – one row for each borough. Display three columns: borough, number of orders(count), total dollar amount of order(sum). The borough with the most orders is displayed first. You may need multiple SQL to answer this question.
+-- 6) Identify customers with the most purchases of pet products in the last 2 years by customer location. Display five rows in your output – one row for each borough. Display three columns: borough, number of orders(count), total dollar amount of order(sum). The borough with the most orders is displayed first. You may need multiple SQL to answer this question.
 select c_borough "borough", count(c.CID) "number of orders", sum(price) "total dollar amount"
 from customer c, purchase pu, product pr
 where c.CID = pu.CID and pu.prod_ID = pr.prod_ID and prod_type = "pets"
 group by c_borough
 order by 3 desc;
 
--- 4) Identify customers with no comments in the product survey. Display the customer name.
+-- 7) Identify customers with no comments in the product survey. Display the customer name.
 select c_first "first name", c_last "last name"
 from customer c 
 where CID in
@@ -322,7 +322,7 @@ where CID in
     from rating
     where rating_comment is NULL);
     
--- 5) Search the open-ended narrative text/comments in the product and delivery comments to identify personally identifiable information (PII). This includes any data that could potentially be used to identify a person. For instance, examples of PII include email address, date of birth, Social Security number, bank account number, home address, and full name. Display the customer who created the comment, date of comment and the comment. Order the output by customer name.
+-- 8) Search the open-ended narrative text/comments in the product and delivery comments to identify personally identifiable information (PII). This includes any data that could potentially be used to identify a person. For instance, examples of PII include email address, date of birth, Social Security number, bank account number, home address, and full name. Display the customer who created the comment, date of comment and the comment. Order the output by customer name.
 select c_first "first name", c_last "last name", survey_date "date of comment", survey_comments "comment"
 from delivery d, purchase pu, customer c
 where d.purchase_ID = pu.purchase_ID and pu.CID = c.CID 
@@ -335,13 +335,13 @@ where d.purchase_ID = pu.purchase_ID and pu.CID = c.CID
         or d.survey_comments like "%Ct" 
 order by c_first, c_last;
 
--- 7) Using purchases made in the last 3 years, identify customers with pets. Display the customer name and email. Order the output by customer name. Replace children with other demographic characteristics. For instance, dog owners, seniors, vegetarians, Tesla car owners, etc. 
+-- 9) Using purchases made in the last 3 years, identify customers with pets. Display the customer name and email. Order the output by customer name. Replace children with other demographic characteristics. For instance, dog owners, seniors, vegetarians, Tesla car owners, etc. 
 select distinct c_first "first name", c_last "last name", c_account "email"
 from customer c, purchase pu, product pr
 where c.CID = pu.CID and pu.prod_ID = pr.prod_ID and pr.prod_type = "pets" and pu.purchase_date >= "2021-05-15"
 order by  c_first, c_last;
 
--- 8) Identify staff with the most deliveries in the last 3 years. Display two columns: staff and number of deliveries. Display one row for each distinct staff. Display the staff with the most deliveries first.
+-- 10) Identify staff with the most deliveries in the last 3 years. Display two columns: staff and number of deliveries. Display one row for each distinct staff. Display the staff with the most deliveries first.
 select s_first, s_last, count(s.SID)
 from staff s, delivery d 
 where s.SID = d.SID and d_date >= "2021-05-15"
@@ -391,4 +391,5 @@ describe delivery;
 
 -- 13)  Display the version of MySQL
 SELECT VERSION();
+ 
  
